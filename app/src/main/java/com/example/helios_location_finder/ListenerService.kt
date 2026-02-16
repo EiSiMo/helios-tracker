@@ -39,8 +39,10 @@ class ListenerService : Service() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(receiver)
-        Log.d(TAG, "Listener service stopped, receiver unregistered")
+        try {
+            unregisterReceiver(receiver)
+        } catch (_: IllegalArgumentException) { }
+        Log.d(TAG, "Listener service stopped")
         super.onDestroy()
     }
 

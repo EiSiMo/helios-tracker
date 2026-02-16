@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
     private val foregroundGranted = mutableStateOf(false)
     private val backgroundGranted = mutableStateOf(false)
-    private val serviceRunning = mutableStateOf(false)
 
     private val foregroundPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -154,7 +153,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         ListenerService.start(this)
-        serviceRunning.value = true
     }
 }
 
