@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
     private val foregroundGranted = mutableStateOf(false)
     private val backgroundGranted = mutableStateOf(false)
+    private val serviceRunning = mutableStateOf(false)
 
     private val foregroundPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -62,11 +63,19 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         backgroundGranted.value = granted
+        if (granted) startListenerService()
+    }
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) startListenerService()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermissions()
+        startListenerService()
 
         val listenTopic = mutableStateOf(Prefs.getListenTopic(this))
         val replyTopic = mutableStateOf(Prefs.getReplyTopic(this))
@@ -132,6 +141,20 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             backgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
+    }
+
+    private fun startListenerService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return
+            }
+        }
+        ListenerService.start(this)
+        serviceRunning.value = true
     }
 }
 
