@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.Helioslocationfinder" parent="android:Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">@color/orange</item>
+        <item name="android:colorAccent">@color/orange_light</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
+    </style>
+</resources>
